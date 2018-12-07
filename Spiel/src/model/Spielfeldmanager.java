@@ -2,7 +2,7 @@ package model;
 
 import java.util.Random;
 
-public class Spielfeld {
+public class Spielfeldmanager extends Manager {
 	
 	private final Spieler[] spieler;
 	
@@ -10,7 +10,7 @@ public class Spielfeld {
 
 	private final Feld[] felder;
 
-	public Spielfeld(Spielerinfos[] infos, Kategorie[] kategorien) {
+	public Spielfeldmanager(Spielerinfos[] infos, Kategorie[] kategorien) {
 		this.spieler = new Spieler[infos.length];
 		for (int i = 0; i < infos.length; i++) {
 			this.spieler[i] = new Spieler(infos[i].getName(), infos[i].getFarbe(), kategorien);
