@@ -13,11 +13,12 @@ public abstract class Manager {
 	}
 	
 	public void attach(GameObserver observer) {
+		observers.add(observer);
 		
 	}
 	
 	public void detach(GameObserver observer) {
-		
+		observers.remove(observer);
 	}
 	
 	public void notifyObservers() {
