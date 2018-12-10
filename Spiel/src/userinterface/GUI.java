@@ -26,6 +26,8 @@ public class GUI extends JFrame implements GameObserver {
 	private final JButton würfel;
 
 	private final JLabel würfelDisplay;
+	
+	private final FeldButton[] felder;
 
 	public GUI(Spielfeldmanager spielfeld) {
 
@@ -38,22 +40,44 @@ public class GUI extends JFrame implements GameObserver {
 
 		setTitle("Learn-Master");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(1000, 700);
+		setSize(1000, 1000);
 		setResizable(false);
 		setLayout(null);
 		setVisible(true);
 		// add circle layout
 		// add würfel
 		würfel = new JButton();
-		würfel.setBounds(450, 325, 100, 50);
+		würfel.setBounds(475, 475, 100, 50);
 		würfel.addActionListener(myController);
 		würfel.setText("würfeln");
 		add(würfel);
 		// add würfeldisplay
 		würfelDisplay = new JLabel("", SwingConstants.CENTER);
-		würfelDisplay.setBounds(450, 275, 100, 50);
+		würfelDisplay.setBounds(475, 425, 100, 50);
 		würfelDisplay.setBorder(BorderFactory.createLineBorder(Color.black));
 		add(würfelDisplay);
+		//add Kreis von Spielfeldern
+		this.felder = new FeldButton[48];
+		int feldPosX = 500;
+		int feldPosY = 900;
+		for (int i = 0; i < 48; i++) {			
+			this.felder[i] = new FeldButton(i);
+			this.felder[i].addActionListener(myController);
+			this.felder[i].setBounds(feldPosX, feldPosY, FeldButton.SIZE, FeldButton.SIZE);
+			this.felder[i].setForeground(Color.WHITE);
+			this.felder[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+			add(this.felder[i]);
+			if (i < 12) {
+				feldPosX -= FeldButton.SIZE;
+				feldPosY -= FeldButton.SIZE;
+			} else if (i < 24) {
+				
+			} else if (i < 36) {
+				
+			} else {
+				
+			}
+		}
 	}
 
 	/**
