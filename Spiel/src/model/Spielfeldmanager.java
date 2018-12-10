@@ -11,6 +11,8 @@ public class Spielfeldmanager extends Manager {
 	private final Feld[] felder;
 	
 	private int gewürfelt;
+	
+	private Spieler amZug;
 
 	public Spielfeldmanager(Spielerinfos[] infos, Kategorie[] kategorien) {
 		this.spieler = new Spieler[infos.length];
@@ -23,6 +25,8 @@ public class Spielfeldmanager extends Manager {
 			this.felder[i] = new Feld();
 		}
 		würfle();
+		//spieler 1 always starts first
+		amZug = spieler[0];
 	}
 
 	public Spieler[] getSpieler() {
@@ -47,6 +51,20 @@ public class Spielfeldmanager extends Manager {
 
 	public int getGewürfelt() {
 		return gewürfelt;
+	}
+	
+	public String getNameVonSpielerAmZug() {
+		return this.amZug.getName();
+	}
+	
+	public String getWissensstandVon(Spieler spieler) {
+		for (Spieler player: this.spieler) {
+			if (spieler.equals(player)) {
+				int[] ws = player.getWissensstand();
+				return ws[0] + "/" + ws[1] + "/" + ws[2] + "/" + ws[3];
+			}
+		}
+		return null;
 	}
 
 }

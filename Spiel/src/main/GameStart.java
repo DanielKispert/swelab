@@ -16,9 +16,9 @@ public class GameStart {
 		// initialize Model
 		Spielerinfos[] infos = new Spielerinfos[4];
 		infos[0] = new Spielerinfos("Adam", Color.RED);
-		infos[1] = new Spielerinfos("Bertha", Color.BLUE);
+		infos[1] = new Spielerinfos("Bertha", Color.YELLOW);
 		infos[2] = new Spielerinfos("Charlie", Color.GREEN);
-		infos[3] = new Spielerinfos("Denise", Color.YELLOW);
+		infos[3] = new Spielerinfos("Denise", Color.BLUE);
 
 		ArrayList<Frage> fragen1 = new ArrayList<>();
 		ArrayList<Frage> fragen2 = new ArrayList<>();

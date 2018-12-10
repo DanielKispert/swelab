@@ -9,11 +9,11 @@ public class Heimatfelder {
 	}
 	
 	public boolean sindVoll() {
-		return heimatfelder[0].istBesetzt() && heimatfelder[1].istBesetzt() && heimatfelder[2].istBesetzt();
+		return getAnzahlInHeimatfeldern() == 3;
 	}
 	
 	public boolean sindLeer() {
-		return !heimatfelder[0].istBesetzt() && !heimatfelder[1].istBesetzt() && !heimatfelder[2].istBesetzt();
+		return getAnzahlInHeimatfeldern() == 0;
 	}
 	
 	public boolean entnehmeFigur(int feldnummer) {
@@ -27,6 +27,20 @@ public class Heimatfelder {
 			}
 		}
 		return false;
+	}
+	
+	public int getAnzahlInHeimatfeldern() {
+		int figuren = 0;
+		if (heimatfelder[0].istBesetzt()) {
+			figuren++;
+		}
+		if (heimatfelder[1].istBesetzt()) {
+			figuren++;
+		}
+		if (heimatfelder[2].istBesetzt()) {
+			figuren++;
+		}
+		return figuren;
 	}
 
 }

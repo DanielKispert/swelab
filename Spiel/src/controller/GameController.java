@@ -30,7 +30,7 @@ public class GameController implements GameObserver, ActionListener {
 		if (e.getSource().equals(myView.getWürfelButton())) {
 			//call service at spielfeld
 			spielfeld.würfle();
-		}
+		} 
 	}
 
 }
