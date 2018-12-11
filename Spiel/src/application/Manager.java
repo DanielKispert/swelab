@@ -1,8 +1,6 @@
-package model;
+package application;
 
 import java.util.ArrayList;
-
-import userinterface.GameObserver;
 
 public abstract class Manager {
 	

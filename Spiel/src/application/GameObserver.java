@@ -1,4 +1,4 @@
-package userinterface;
+package application;
 
 public interface GameObserver {
 	

@@ -1,4 +1,4 @@
-package model.player;
+package application;
 
 public class Heimatfelder {
 	
@@ -23,6 +23,15 @@ public class Heimatfelder {
 	public boolean fügeFigurHinzu() {
 		for (Heimatfeld feld: heimatfelder) {
 			if (feld.setzeFigur()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean entnehmeFigur() {
+		for (Heimatfeld feld: heimatfelder) {
+			if (feld.nimmFigur()) {
 				return true;
 			}
 		}

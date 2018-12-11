@@ -1,9 +1,6 @@
-package model;
+package application;
 
 import java.awt.Color;
-
-import model.player.Heimatfelder;
-import model.player.Wissensstandsanzeiger;
 
 public class Spieler {
 	

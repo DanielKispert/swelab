@@ -1,6 +1,4 @@
-package model.player;
-
-import model.Kategorie;
+package application;
 
 public class Wissensstandsanzeiger {
 

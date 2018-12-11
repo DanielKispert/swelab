@@ -1,8 +1,8 @@
-package userinterface;
+package application.presentation;
 
 import javax.swing.JButton;
 
-import model.Spieler;
+import application.Spieler;
 
 public class HeimatfeldButton extends JButton {
 	

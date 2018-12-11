@@ -1,4 +1,4 @@
-package userinterface;
+package application.presentation;
 
 import java.awt.Color;
 
@@ -8,8 +8,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import controller.GameController;
-import model.Spielfeldmanager;
+import application.Feld;
+import application.GameObserver;
+import application.Spieler;
+import application.Spielfeldmanager;
+import application.Zugzustand;
 
 public class GUI extends JFrame implements GameObserver {
 
@@ -29,13 +32,19 @@ public class GUI extends JFrame implements GameObserver {
 	
 	private final JLabel spielerAmZug;
 	
+	private final JLabel infoFeld;
+	
 	private final FeldButton[] felder;
 	
 	private final JLabel[] wissensstandsanzeiger;
 	
 	private final KategorieButton[] kategorien;
 	
-	private final JButton[] heimatfelder;
+	private final HeimatfeldButton[] heimatfelder;
+	
+	private Zugzustand zugzustand;
+	
+	private Spieler aktiverSpieler;
 
 	public GUI(Spielfeldmanager spielfeld) {
 
@@ -51,7 +60,11 @@ public class GUI extends JFrame implements GameObserver {
 		setSize(1000, 1000);
 		setResizable(false);
 		setLayout(null);
-		// add circle layout
+		// add Info Feld
+		infoFeld = new JLabel("", SwingConstants.CENTER);
+		infoFeld.setBounds(425, 600, 150, 100);
+		infoFeld.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		add(infoFeld);
 		// add würfel
 		würfel = new JButton();
 		würfel.setBounds(450, 525, 100, 50);
@@ -64,7 +77,7 @@ public class GUI extends JFrame implements GameObserver {
 		würfelDisplay.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		add(würfelDisplay);
 		// add Spielerdisplay
-		spielerAmZug = new JLabel("Am Zug: " + spielfeld.getNameVonSpielerAmZug(), SwingConstants.CENTER);
+		spielerAmZug = new JLabel("", SwingConstants.CENTER);
 		spielerAmZug.setBounds(450, 425, 100, 50);
 		spielerAmZug.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		add(spielerAmZug);
@@ -105,7 +118,6 @@ public class GUI extends JFrame implements GameObserver {
 		this.kategorien[1].setBounds(600, 300, 100, 100);
 		this.kategorien[2].setBounds(600, 600, 100, 100);
 		this.kategorien[3].setBounds(300, 600, 100, 100);
-		// add Heimatfelder
 		
 		// add Kreis von Spielfeldern
 		this.felder = new FeldButton[48];
@@ -115,7 +127,6 @@ public class GUI extends JFrame implements GameObserver {
 			this.felder[i] = new FeldButton(i);
 			this.felder[i].addActionListener(myController);
 			this.felder[i].setBounds(feldPosX, feldPosY, FeldButton.SIZE, FeldButton.SIZE);
-			this.felder[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 			this.felder[i].setText("");
 			switch (i) {
 			case 0: this.felder[i].setBackground(spielfeld.getSpieler()[0].getFarbe()); break;
@@ -146,10 +157,23 @@ public class GUI extends JFrame implements GameObserver {
 	 * spielfeldstate was updated
 	 */
 	public void update() {
+		this.zugzustand = spielfeld.getZugZustand();
+		this.aktiverSpieler = spielfeld.getSpielerAmZug();
 		// update würfeldisplay
-		würfelDisplay.setText(spielfeld.getGewürfelt() + "");
-		// update Spieler an der Reihe
-		spielerAmZug.setText("Am Zug: " + spielfeld.getNameVonSpielerAmZug());
+		int gewürfelteZahl = spielfeld.getGewürfelt();
+		if (gewürfelteZahl != -1) {
+			würfelDisplay.setText(spielfeld.getGewürfelt() + "");;
+		}  else {
+			würfelDisplay.setText("");
+		}
+		//update würfelbutton
+		if (spielfeld.getDarfNochWürfeln()) {
+			würfel.setEnabled(true);
+		} else {
+			würfel.setEnabled(false);
+		}
+		// update Spieler am Zug
+		spielerAmZug.setText("Am Zug: " + aktiverSpieler.getName());
 		// update wissensstände & Kategorien & Heimatfelder
 		for (int i = 0; i < 4; i++) {
 			wissensstandsanzeiger[i].setText("<html>" + spielfeld.getSpieler()[i].getName() + ":<br>"
@@ -158,10 +182,64 @@ public class GUI extends JFrame implements GameObserver {
 			heimatfelder[i]
 					.setText("<html><b>" + spielfeld.getSpieler()[i].getHeimatfelder().getAnzahlInHeimatfeldern());
 		}
+		// update Felder
+		Feld[] feldUpdate = spielfeld.getFelder();
+		for (int i = 0; i < 48; i++) {
+			Spieler besetztVon = feldUpdate[i].getBesetztVon();
+			if (besetztVon == null) {
+				felder[i].setText("");
+				felder[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+			} else {
+				felder[i].setBorder(BorderFactory.createLineBorder(besetztVon.getFarbe(), 4));
+				felder[i].setText("O");
+			}
+		}
+		// update InfoFeld & block Fields
+		String infoString = "<html><br>";
+		switch (zugzustand) {
+		case DARF_NOCH_WÜRFELN:
+			infoString += "bitte würfeln";
+			break;
+		case MUSS_AUS_HEIMATFELD_ZIEHEN:
+			//block Heimatfelder anderer Spieler
+			for (int i = 0; i < heimatfelder.length; i++) {
+				if (!heimatfelder[i].getSpieler().equals(aktiverSpieler)) {
+					heimatfelder[i].setEnabled(false);
+				}
+			}
+			infoString += "bitte Heimatfeld auswählen";
+			break;
+		case MUSS_FELD_ZIEHEN:
+			infoString += "bitte Spielfigur auswählen";
+			break;
+		case FIGUR_AUS_FELD_AUSGEWÄHLT:
+			infoString += "bitte Zielfeld auswählen";
+			break;
+		case FIGUR_AUS_HEIMATFELD_AUSGEWÄHLT:
+			for (HeimatfeldButton heimatfeld: heimatfelder) {
+				heimatfeld.setEnabled(true);
+			}
+			infoString += "bitte Startfeld auswählen";
+			break;
+		case FRAGE:
+			infoString += "Fragerunde!";
+			break;
+		default:
+			break;
+		}
+		infoFeld.setText(infoString);
 
 	}
 
 	public JButton getWürfelButton() {
 		return this.würfel;
+	}
+	
+	public HeimatfeldButton[] getHeimatfelder() {
+		return this.heimatfelder;
+	}
+	
+	public FeldButton[] getFelder() {
+		return this.felder;
 	}
 }

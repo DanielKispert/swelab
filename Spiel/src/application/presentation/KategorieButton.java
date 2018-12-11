@@ -1,4 +1,4 @@
-package userinterface;
+package application.presentation;
 
 import javax.swing.JButton;
 

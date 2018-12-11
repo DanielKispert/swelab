@@ -1,4 +1,4 @@
-package model.player;
+package application;
 
 public class Heimatfeld {
 

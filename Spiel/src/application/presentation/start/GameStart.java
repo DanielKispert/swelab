@@ -1,13 +1,13 @@
-package main;
+package application.presentation.start;
 
 import java.awt.Color;
 import java.util.ArrayList;
 
-import model.Frage;
-import model.Kategorie;
-import model.Spielerinfos;
-import model.Spielfeldmanager;
-import userinterface.GUI;
+import application.Frage;
+import application.Kategorie;
+import application.Spielerinfos;
+import application.Spielfeldmanager;
+import application.presentation.GUI;
 
 public class GameStart {
 
