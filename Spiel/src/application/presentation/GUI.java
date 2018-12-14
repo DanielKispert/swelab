@@ -27,6 +27,12 @@ public class GUI extends JFrame implements GameObserver {
 	private final GameController myController;
 
 	private final JButton würfel;
+	
+	private final JButton frageRichtigButton;
+	
+	private final JButton frageFalschButton;
+	
+	private final JLabel frageDisplay;
 
 	private final JLabel würfelDisplay;
 	
@@ -60,6 +66,24 @@ public class GUI extends JFrame implements GameObserver {
 		setSize(1000, 1000);
 		setResizable(false);
 		setLayout(null);
+		//add Frage richtig & Frage falsch buttons
+		frageRichtigButton = new JButton();
+		frageRichtigButton.setBounds(315, 465, 70, 70);
+		frageRichtigButton.setBackground(Color.GREEN);
+		frageRichtigButton.addActionListener(myController);
+		frageRichtigButton.setText("<html><br>Frage korrekt");
+		add(frageRichtigButton);
+		frageFalschButton = new JButton();
+		frageFalschButton.setBounds(615, 465, 70, 70);
+		frageFalschButton.setBackground(Color.RED);
+		frageFalschButton.addActionListener(myController);
+		frageFalschButton.setText("<html><br>Frage falsch");
+		add(frageFalschButton);
+		//add Frage Feld
+		frageDisplay = new JLabel("", SwingConstants.CENTER);
+		frageDisplay.setBounds(425, 300, 150, 100);
+		frageDisplay.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		add(frageDisplay);
 		// add Info Feld
 		infoFeld = new JLabel("", SwingConstants.CENTER);
 		infoFeld.setBounds(425, 600, 150, 100);
