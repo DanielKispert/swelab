@@ -25,7 +25,7 @@ public class Wissensstandskategorie {
 			this.stand--;
 			return true;
 		} else {
-			return false;
+			return true;
 		}
 	}
 	

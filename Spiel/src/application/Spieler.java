@@ -31,8 +31,8 @@ public class Spieler {
 		return farbe;
 	}
 	
-	public int[] getWissensstand() {
-		return anzeiger.getWissen();
+	public Wissensstandsanzeiger getWissensstandsanzeiger() {
+		return anzeiger;
 	}
 	
 	

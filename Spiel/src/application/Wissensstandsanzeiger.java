@@ -25,5 +25,23 @@ public class Wissensstandsanzeiger {
 		}
 		return false;
 	}
+	
+	public boolean erhöheNächsten() {
+		for (Wissensstandskategorie kat: kategorien) {
+			if (kat.getWissen() != 3) {
+				return kat.erhöheWissen();
+			}
+		}
+		return false;
+	}
+	
+	public boolean verringere(Kategorie kategorie) {
+		for (Wissensstandskategorie kat: kategorien) {
+			if (kat.getKategorie().getName().equals(kategorie.getName()) && kat.verringereWissen()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

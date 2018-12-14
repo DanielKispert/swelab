@@ -2,6 +2,8 @@ package application;
 
 import java.util.Random;
 
+import org.omg.CosNaming.IstringHelper;
+
 public class Spielfeldmanager extends Manager {
 	
 	private final Spieler[] spieler;
@@ -20,11 +22,15 @@ public class Spielfeldmanager extends Manager {
 	
 	private int idZugfeld;
 	
+	private int idZugziel;
+	
 	private Kategorie ausgewählteKategorieFürFrage;
 	
 	private Spieler gefragterSpieler;
 	
 	private Frage frage;
+	
+	private Spieler hatGewonnen;
 
 	public Spielfeldmanager(Spielerinfos[] infos, Kategorie[] kategorien) {
 		this.spieler = new Spieler[infos.length];
@@ -45,6 +51,7 @@ public class Spielfeldmanager extends Manager {
 		ausgewählteKategorieFürFrage = null;
 		gefragterSpieler = null;
 		frage = null;
+		hatGewonnen = null;
 	}
 
 	public Spieler[] getSpieler() {
@@ -126,10 +133,38 @@ public class Spielfeldmanager extends Manager {
 		return false;
 	}
 	
+
+	
+	private void erhöheWissensstandVonSpieler() {
+		if (!this.gefragterSpieler.getWissensstandsanzeiger().erhöhe(this.ausgewählteKategorieFürFrage)
+				&& !this.gefragterSpieler.getWissensstandsanzeiger().erhöheNächsten()) {
+			this.zugzustand = Zugzustand.GEWONNEN;
+			notifyObservers();
+		}
+	}
+	
 	/**
 	 * Service
 	 */
 	public void frageRichtigBeantwortet() {
+		if (this.zugzustand.equals(Zugzustand.ERSTE_FRAGE_BEANTWORTEN)) {
+			erhöheWissensstandVonSpieler();
+			// fragender Spieler (am Zug) kommt auf das Feld, gefragter Spieler auf sein Startfeld oder sein Heimatfeld falls das Startfeld belegt ist
+			this.felder[idZugziel].setBesetztVon(amZug);
+			if (this.felder[getStartfeldVonSpieler(gefragterSpieler)].getBesetztVon() == null) {
+				this.felder[getStartfeldVonSpieler(gefragterSpieler)].setBesetztVon(gefragterSpieler);
+			} else {
+				gefragterSpieler.getHeimatfelder().fügeFigurHinzu();
+			}
+			beendeZug();
+			notifyObservers();
+		} else if (this.zugzustand.equals(Zugzustand.ZWEITE_FRAGE_BEANTWORTEN)) {
+			erhöheWissensstandVonSpieler();
+			//Spieler am Zug kommt auf das Feld
+			this.felder[idZugziel].setBesetztVon(amZug);
+			beendeZug();
+			notifyObservers();
+		}
 		
 	}
 	
@@ -137,7 +172,22 @@ public class Spielfeldmanager extends Manager {
 	 * Service
 	 */
 	public void frageFalschBeantwortet() {
-		
+		if (this.zugzustand.equals(Zugzustand.ERSTE_FRAGE_BEANTWORTEN)) {
+			//gefragter Spieler direkt aufs Heimatfeld
+			this.gefragterSpieler.getHeimatfelder().fügeFigurHinzu();
+			this.gefragterSpieler.getWissensstandsanzeiger().verringere(ausgewählteKategorieFürFrage);
+			//Spieler am Zug darf Frage beantworten
+			this.felder[idZugziel].setBesetztVon(null);
+			this.zugzustand = Zugzustand.ZWEITE_FRAGE_BEANTWORTEN;
+			this.gefragterSpieler = amZug;
+			notifyObservers();			
+		} else if (this.zugzustand.equals(Zugzustand.ZWEITE_FRAGE_BEANTWORTEN)) {
+			this.amZug.getWissensstandsanzeiger().verringere(ausgewählteKategorieFürFrage);
+			this.amZug.getHeimatfelder().fügeFigurHinzu();
+			beendeZug();
+			notifyObservers();
+			
+		}
 	}
 	
 	/**
@@ -206,6 +256,7 @@ public class Spielfeldmanager extends Manager {
 					notifyObservers();	
 				} else if (besetzenderSpieler.equals(amZug)) {
 					// jemand anders steht auf dem Startfeld, starte Fragerunde
+					this.idZugziel = id;
 					stelleFrage(besetzenderSpieler);
 				} else {
 					// Es kann nicht eintreten, dass derselbe Spieler auf dem Startfeld steht, da der Fall beim Würfeln überprüft wird
@@ -222,6 +273,7 @@ public class Spielfeldmanager extends Manager {
 					notifyObservers();
 				} else if (besetzenderSpieler.equals(amZug)) {
 					// Feld besetzt von Gegner
+					this.idZugziel = id;
 					stelleFrage(besetzenderSpieler);
 				} else {
 					// Feld besetzt vom Spieler selbst, andere Figur auswählen
@@ -248,7 +300,11 @@ public class Spielfeldmanager extends Manager {
 				zugzustand = Zugzustand.DARF_NOCH_WÜRFELN;
 				gewürfelt = -1;
 				idZugfeld = -1;
+				idZugziel = -1;
 				anzahlWürfe = 0;
+				ausgewählteKategorieFürFrage = null;
+				gefragterSpieler = null;
+				frage = null;
 				break;
 			}
 		}
@@ -265,7 +321,7 @@ public class Spielfeldmanager extends Manager {
 	public String getWissensstandVon(Spieler spieler) {
 		for (Spieler player: this.spieler) {
 			if (spieler.equals(player)) {
-				int[] ws = player.getWissensstand();
+				int[] ws = player.getWissensstandsanzeiger().getWissen();
 				return ws[0] + "/" + ws[1] + "/" + ws[2] + "/" + ws[3];
 			}
 		}
@@ -295,6 +351,10 @@ public class Spielfeldmanager extends Manager {
 	
 	public String getAktuellerLösungstext() {
 		return this.frage.getLösungstext();
+	}
+	
+	public Spieler getGewinner() {
+		return this.hatGewonnen;
 	}
 
 }
