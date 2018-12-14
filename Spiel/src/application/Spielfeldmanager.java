@@ -139,7 +139,18 @@ public class Spielfeldmanager extends Manager {
 		}	
 	}
 	
+	/**
+	 * TODO
+	 * 1. ziehender Spieler klickt auf Kategorie
+	 * 2. zufällige Frage wird angezeigt
+	 * 3. Frage wird richtig oder falsch beantwortet
+	 * 4. Richtig: Fragender Spieler kommt auf Feld, gefragter auf Startfeld oder Heimatfeld wenn Startfeld voll
+	 * 5. Falsch: gefragter kommt auf Heimatfeld, fragender Spieler kriegt Frage gestellt
+	 * 6. Frage richtig: Figur kommt auf Feld. Falsch: Figur kommt auf Heimatfeld
+	 */
 	private void stelleFrage() {
+		//TODO
+		this.zugzustand = Zugzustand.FRAGE;
 		beendeZug();
 		notifyObservers();
 	}
@@ -152,14 +163,16 @@ public class Spielfeldmanager extends Manager {
 			if (id == getStartfeldVonSpieler(amZug)) {
 				if (this.felder[id].getBesetztVon() == null) {
 					amZug.getHeimatfelder().entnehmeFigur();
+					// Versuche, die Figur auf das Startfeld des Spielers zu setzen, muss gelingen da Feld leer ist
 					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();	
 				} else if (!felder[id].getBesetztVon().equals(amZug)) {
 					// jemand anders steht auf dem Startfeld, starte Fragerunde
-					this.zugzustand = Zugzustand.FRAGE;
 					stelleFrage();
-				}			
+				} else {
+					// Es kann nicht eintreten, dass derselbe Spieler auf dem Startfeld steht, da der Fall beim Würfeln überprüft wird
+				}
 			}			
 		} else if (this.zugzustand.equals(Zugzustand.FIGUR_AUS_FELD_AUSGEWÄHLT)) {
 			//Spieler kann sich dorthin bewegen
@@ -167,13 +180,17 @@ public class Spielfeldmanager extends Manager {
 				if (this.felder[id].getBesetztVon() == null) {
 					// Feld ist frei
 					this.felder[idZugfeld].setBesetztVon(null);
-					this.felder[idZugfeld].setBesetztVon(amZug);
+					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();
-				} else if (this.felder[id].getBesetztVon().equals(amZug)) {
-					// Feld besetzt vom Spieler
-				} else {
+				} else if (!this.felder[id].getBesetztVon().equals(amZug)) {
 					// Feld besetzt von Gegner
+					stelleFrage();
+				} else {
+					// Feld besetzt vom Spieler selbst, andere Figur auswählen
+					this.zugzustand = Zugzustand.MUSS_FELD_ZIEHEN;
+					notifyObservers();
+					
 				}
 			}
 		
