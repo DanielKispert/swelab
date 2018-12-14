@@ -19,6 +19,12 @@ public class Spielfeldmanager extends Manager {
 	private Zugzustand zugzustand;
 	
 	private int idZugfeld;
+	
+	private Kategorie ausgewählteKategorieFürFrage;
+	
+	private Spieler gefragterSpieler;
+	
+	private Frage frage;
 
 	public Spielfeldmanager(Spielerinfos[] infos, Kategorie[] kategorien) {
 		this.spieler = new Spieler[infos.length];
@@ -36,6 +42,9 @@ public class Spielfeldmanager extends Manager {
 		gewürfelt = -1;
 		idZugfeld = -1;
 		anzahlWürfe = 0;
+		ausgewählteKategorieFürFrage = null;
+		gefragterSpieler = null;
+		frage = null;
 	}
 
 	public Spieler[] getSpieler() {
@@ -118,6 +127,20 @@ public class Spielfeldmanager extends Manager {
 	}
 	
 	/**
+	 * Service
+	 */
+	public void frageRichtigBeantwortet() {
+		
+	}
+	
+	/**
+	 * Service
+	 */
+	public void frageFalschBeantwortet() {
+		
+	}
+	
+	/**
 	 * Service zieht eine Figur von einem Feld
 	 */
 	public void zieheVonFeld(int id) {
@@ -140,6 +163,19 @@ public class Spielfeldmanager extends Manager {
 	}
 	
 	/**
+	 * Service
+	 * setzt eine Kategorie und stellt eine Frage daraus
+	 */
+	public void wähleKategorieFürFrage(int id) {
+		if (this.zugzustand.equals(Zugzustand.FRAGE_KATEGORIE_AUSWÄHLEN)) {
+			this.ausgewählteKategorieFürFrage = this.getKategorien()[id];
+			this.zugzustand = Zugzustand.ERSTE_FRAGE_BEANTWORTEN;
+			notifyObservers();
+		}
+		
+	}
+	
+	/**
 	 * TODO
 	 * 1. ziehender Spieler klickt auf Kategorie
 	 * 2. zufällige Frage wird angezeigt
@@ -148,10 +184,10 @@ public class Spielfeldmanager extends Manager {
 	 * 5. Falsch: gefragter kommt auf Heimatfeld, fragender Spieler kriegt Frage gestellt
 	 * 6. Frage richtig: Figur kommt auf Feld. Falsch: Figur kommt auf Heimatfeld
 	 */
-	private void stelleFrage() {
+	private void stelleFrage(Spieler gefragterSpieler) {
 		//TODO
-		this.zugzustand = Zugzustand.FRAGE;
-		beendeZug();
+		this.zugzustand = Zugzustand.FRAGE_KATEGORIE_AUSWÄHLEN;
+		this.gefragterSpieler = gefragterSpieler;
 		notifyObservers();
 	}
 	
@@ -159,17 +195,18 @@ public class Spielfeldmanager extends Manager {
 	 * Service
 	 */
 	public void zieheAufFeld(int id) {
+		Spieler besetzenderSpieler = this.felder[id].getBesetztVon();
 		if (this.zugzustand.equals(Zugzustand.FIGUR_AUS_HEIMATFELD_AUSGEWÄHLT)) {		
 			if (id == getStartfeldVonSpieler(amZug)) {
-				if (this.felder[id].getBesetztVon() == null) {
+				if (besetzenderSpieler == null) {
 					amZug.getHeimatfelder().entnehmeFigur();
 					// Versuche, die Figur auf das Startfeld des Spielers zu setzen, muss gelingen da Feld leer ist
 					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();	
-				} else if (!felder[id].getBesetztVon().equals(amZug)) {
+				} else if (besetzenderSpieler.equals(amZug)) {
 					// jemand anders steht auf dem Startfeld, starte Fragerunde
-					stelleFrage();
+					stelleFrage(besetzenderSpieler);
 				} else {
 					// Es kann nicht eintreten, dass derselbe Spieler auf dem Startfeld steht, da der Fall beim Würfeln überprüft wird
 				}
@@ -177,15 +214,15 @@ public class Spielfeldmanager extends Manager {
 		} else if (this.zugzustand.equals(Zugzustand.FIGUR_AUS_FELD_AUSGEWÄHLT)) {
 			//Spieler kann sich dorthin bewegen
 			if (idZugfeld != -1 && (idZugfeld + gewürfelt)%48 == id) {				
-				if (this.felder[id].getBesetztVon() == null) {
+				if (besetzenderSpieler == null) {
 					// Feld ist frei
 					this.felder[idZugfeld].setBesetztVon(null);
 					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();
-				} else if (!this.felder[id].getBesetztVon().equals(amZug)) {
+				} else if (besetzenderSpieler.equals(amZug)) {
 					// Feld besetzt von Gegner
-					stelleFrage();
+					stelleFrage(besetzenderSpieler);
 				} else {
 					// Feld besetzt vom Spieler selbst, andere Figur auswählen
 					this.zugzustand = Zugzustand.MUSS_FELD_ZIEHEN;
@@ -246,6 +283,18 @@ public class Spielfeldmanager extends Manager {
 	 */
 	public boolean getDarfNochWürfeln() {
 		return (anzahlWürfe == 0) || (amZug.getHeimatfelder().sindVoll() && anzahlWürfe < 3 && gewürfelt != 6);
+	}
+
+	public String getAusgewählteKategorienameFürFrage() {
+		return ausgewählteKategorieFürFrage.getName();
+	}
+	
+	public String getAktuellerFragetext() {
+		return this.frage.getFragetext();
+	}
+	
+	public String getAktuellerLösungstext() {
+		return this.frage.getLösungstext();
 	}
 
 }

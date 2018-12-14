@@ -70,7 +70,27 @@ public class GameController implements GameObserver, ActionListener {
 				}
 			}
 			break;
-		default:
+		case FRAGE_KATEGORIE_AUSWÄHLEN:
+			for (KategorieButton ktb: myView.getKategorien()) {
+				if (e.getSource().equals(ktb)) {
+					spielfeld.wähleKategorieFürFrage(ktb.getId());
+					break;
+				}
+			}
+			break;
+		case ERSTE_FRAGE_BEANTWORTEN:
+			if (e.getSource().equals(myView.getFrageRichtigButton())) {
+				spielfeld.frageRichtigBeantwortet();				
+			} else if (e.getSource().equals(myView.getFrageFalschButton())) {
+				spielfeld.frageFalschBeantwortet();	
+			}
+			break;
+		case ZWEITE_FRAGE_BEANTWORTEN:
+			if (e.getSource().equals(myView.getFrageRichtigButton())) {
+				spielfeld.frageRichtigBeantwortet();				
+			} else if (e.getSource().equals(myView.getFrageFalschButton())) {
+				spielfeld.frageFalschBeantwortet();	
+			}
 			break;
 		
 		}

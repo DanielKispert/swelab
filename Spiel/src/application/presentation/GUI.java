@@ -218,6 +218,8 @@ public class GUI extends JFrame implements GameObserver {
 				felder[i].setText("O");
 			}
 		}
+		// Update Fragefeld & Buttons
+		this.frageDisplay.setText("");
 		// update InfoFeld & block Fields
 		String infoString = "<html><br>";
 		switch (zugzustand) {
@@ -245,10 +247,15 @@ public class GUI extends JFrame implements GameObserver {
 			}
 			infoString += "bitte Startfeld auswählen";
 			break;
-		case FRAGE:
-			infoString += "Fragerunde!";
+		case FRAGE_KATEGORIE_AUSWÄHLEN:
+			infoString += "Bitte eine Kategorie für die Frage auswählen";
 			break;
-		default:
+		case ERSTE_FRAGE_BEANTWORTEN:
+			infoString += spielfeld.getAusgewählteKategorienameFürFrage() + "ausgewählt";
+			// fülle Fragedisplay
+			this.frageDisplay.setText(spielfeld.getAktuellerFragetext());
+			break;
+		case ZWEITE_FRAGE_BEANTWORTEN:
 			break;
 		}
 		infoFeld.setText(infoString);
@@ -265,5 +272,17 @@ public class GUI extends JFrame implements GameObserver {
 	
 	public FeldButton[] getFelder() {
 		return this.felder;
+	}
+	
+	public KategorieButton[] getKategorien() {
+		return this.kategorien;
+	}
+	
+	public JButton getFrageRichtigButton() {
+		return this.frageRichtigButton;
+	}
+	
+	public JButton getFrageFalschButton() {
+		return this.frageFalschButton;
 	}
 }
