@@ -251,11 +251,17 @@ public class GUI extends JFrame implements GameObserver {
 			infoString += "Bitte eine Kategorie für die Frage auswählen";
 			break;
 		case ERSTE_FRAGE_BEANTWORTEN:
-			infoString += spielfeld.getAusgewählteKategorienameFürFrage() + "ausgewählt";
+			infoString += spielfeld.getAusgewählteKategorienameFürFrage() + " ausgewählt";
 			// fülle Fragedisplay
 			this.frageDisplay.setText(spielfeld.getAktuellerFragetext());
 			break;
 		case ZWEITE_FRAGE_BEANTWORTEN:
+			infoString += this.aktiverSpieler.getName() + " muss eine Frage beantworten";
+			// fülle Fragedisplay
+			this.frageDisplay.setText(spielfeld.getAktuellerFragetext());
+			break;
+		case GEWONNEN:
+			infoString += this.spielfeld.getGewinner().getName() + " hat gewonnen!";
 			break;
 		}
 		infoFeld.setText(infoString);

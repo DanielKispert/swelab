@@ -179,6 +179,8 @@ public class Spielfeldmanager extends Manager {
 			//Spieler am Zug darf Frage beantworten
 			this.felder[idZugziel].setBesetztVon(null);
 			this.zugzustand = Zugzustand.ZWEITE_FRAGE_BEANTWORTEN;
+			// neue Frage
+			this.frage = this.ausgewählteKategorieFürFrage.getFrage();
 			this.gefragterSpieler = amZug;
 			notifyObservers();			
 		} else if (this.zugzustand.equals(Zugzustand.ZWEITE_FRAGE_BEANTWORTEN)) {
@@ -219,6 +221,8 @@ public class Spielfeldmanager extends Manager {
 	public void wähleKategorieFürFrage(int id) {
 		if (this.zugzustand.equals(Zugzustand.FRAGE_KATEGORIE_AUSWÄHLEN)) {
 			this.ausgewählteKategorieFürFrage = this.getKategorien()[id];
+			// finde Frage
+			this.frage = this.ausgewählteKategorieFürFrage.getFrage();
 			this.zugzustand = Zugzustand.ERSTE_FRAGE_BEANTWORTEN;
 			notifyObservers();
 		}
@@ -254,7 +258,7 @@ public class Spielfeldmanager extends Manager {
 					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();	
-				} else if (besetzenderSpieler.equals(amZug)) {
+				} else if (!besetzenderSpieler.equals(amZug)) {
 					// jemand anders steht auf dem Startfeld, starte Fragerunde
 					this.idZugziel = id;
 					stelleFrage(besetzenderSpieler);
@@ -271,8 +275,9 @@ public class Spielfeldmanager extends Manager {
 					this.felder[id].setBesetztVon(amZug);
 					beendeZug();
 					notifyObservers();
-				} else if (besetzenderSpieler.equals(amZug)) {
+				} else if (!besetzenderSpieler.equals(amZug)) {
 					// Feld besetzt von Gegner
+					this.felder[idZugfeld].setBesetztVon(null);
 					this.idZugziel = id;
 					stelleFrage(besetzenderSpieler);
 				} else {
