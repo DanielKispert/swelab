@@ -35,7 +35,7 @@ public interface IntLernspielmanager extends IntBrettspielmanager {
 
 	public void würfle();
 
-	public void zieheVonHeimatfeld(LernspielSpieler spieler);
+	public void zieheVonHeimatfeld(IntLernspielSpieler spieler);
 
 	public void zieheVonFeld(int id);
 	

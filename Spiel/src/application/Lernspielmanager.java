@@ -206,7 +206,7 @@ public class Lernspielmanager extends Brettspielmanager implements IntLernspielm
 	/**
 	 * Service
 	 */
-	public void zieheVonHeimatfeld(LernspielSpieler spieler) {
+	public void zieheVonHeimatfeld(IntLernspielSpieler spieler) {
 		if (amZug.equals(spieler) && kannSpielerAufStartfeldZiehen()) {
 			this.zugzustand = Zugzustand.FIGUR_AUS_HEIMATFELD_AUSGEWÄHLT;
 			notifyObservers();
