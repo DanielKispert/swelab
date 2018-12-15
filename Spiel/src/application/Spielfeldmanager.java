@@ -177,13 +177,14 @@ public class Spielfeldmanager extends Manager {
 			this.gefragterSpieler.getHeimatfelder().fügeFigurHinzu();
 			this.gefragterSpieler.getWissensstandsanzeiger().verringere(ausgewählteKategorieFürFrage);
 			//Spieler am Zug darf Frage beantworten
-			this.felder[idZugziel].setBesetztVon(null);
+			this.felder[idZugziel].setBesetztVon(amZug);
 			this.zugzustand = Zugzustand.ZWEITE_FRAGE_BEANTWORTEN;
 			// neue Frage
 			this.frage = this.ausgewählteKategorieFürFrage.getFrage();
 			this.gefragterSpieler = amZug;
 			notifyObservers();			
 		} else if (this.zugzustand.equals(Zugzustand.ZWEITE_FRAGE_BEANTWORTEN)) {
+			this.felder[idZugziel].setBesetztVon(null);
 			this.amZug.getWissensstandsanzeiger().verringere(ausgewählteKategorieFürFrage);
 			this.amZug.getHeimatfelder().fügeFigurHinzu();
 			beendeZug();
