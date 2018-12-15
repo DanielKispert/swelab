@@ -2,17 +2,17 @@ package application.presentation;
 
 import javax.swing.JButton;
 
-import application.Spieler;
+import application.IntLernspielSpieler;
 
 public class HeimatfeldButton extends JButton {
 	
-	private final Spieler spieler;
+	private final IntLernspielSpieler spieler;
 	
-	public HeimatfeldButton(Spieler spieler) {
+	public HeimatfeldButton(IntLernspielSpieler spieler) {
 		this.spieler = spieler;
 	}
 
-	public Spieler getSpieler() {
+	public IntLernspielSpieler getSpieler() {
 		return spieler;
 	}
 

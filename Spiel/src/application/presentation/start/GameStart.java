@@ -4,9 +4,10 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import application.Frage;
+import application.IntFrage;
 import application.Kategorie;
 import application.Spielerinfos;
-import application.Spielfeldmanager;
+import application.Lernspielmanager;
 import application.presentation.GUI;
 
 public class GameStart {
@@ -20,10 +21,10 @@ public class GameStart {
 		infos[2] = new Spielerinfos("Charlie", Color.GREEN);
 		infos[3] = new Spielerinfos("Denise", Color.BLUE);
 
-		ArrayList<Frage> fragen1 = new ArrayList<>();
-		ArrayList<Frage> fragen2 = new ArrayList<>();
-		ArrayList<Frage> fragen3 = new ArrayList<>();
-		ArrayList<Frage> fragen4 = new ArrayList<>();
+		ArrayList<IntFrage> fragen1 = new ArrayList<>();
+		ArrayList<IntFrage> fragen2 = new ArrayList<>();
+		ArrayList<IntFrage> fragen3 = new ArrayList<>();
+		ArrayList<IntFrage> fragen4 = new ArrayList<>();
 		for (int i = 0; i < 48; i++) {
 			switch (i % 4) {
 			case 0:
@@ -46,7 +47,7 @@ public class GameStart {
 		kategorien[2] = new Kategorie("Kategorie 3", fragen3);
 		kategorien[3] = new Kategorie("Kategorie 4", fragen4);
 		
-		Spielfeldmanager spielfeld = new Spielfeldmanager(infos, kategorien);
+		Lernspielmanager spielfeld = new Lernspielmanager(infos, kategorien);
 
 		// initialize GUI
 		new GUI(spielfeld);

@@ -2,22 +2,19 @@ package application.presentation;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
-import application.GameObserver;
-import application.Spieler;
-import application.Spielfeldmanager;
-import application.Zugzustand;
+import application.BrettspielObserver;
+import application.IntLernspielmanager;
 
-public class GameController implements GameObserver, ActionListener {
+public class GameController implements BrettspielObserver, ActionListener {
 
-	private final Spielfeldmanager spielfeld;
+	private final IntLernspielmanager spielfeld;
 	
 	private final GUI myView;
 	
-	private Zugzustand zustand;
+	private IntLernspielmanager.Zugzustand zustand;
 
-	public GameController(GUI gui, Spielfeldmanager spielfeld) {
+	public GameController(GUI gui, IntLernspielmanager spielfeld) {
 		// attach to model
 		this.spielfeld = spielfeld;
 		this.myView = gui;
@@ -28,7 +25,6 @@ public class GameController implements GameObserver, ActionListener {
 	@Override
 	public void update() {
 		zustand = spielfeld.getZugZustand();
-
 	}
 
 	@Override
@@ -91,6 +87,9 @@ public class GameController implements GameObserver, ActionListener {
 			} else if (e.getSource().equals(myView.getFrageFalschButton())) {
 				spielfeld.frageFalschBeantwortet();	
 			}
+			break;
+		default:
+			// do nothing
 			break;
 		
 		}

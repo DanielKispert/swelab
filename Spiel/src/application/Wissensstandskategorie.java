@@ -4,9 +4,9 @@ public class Wissensstandskategorie {
 	
 	private int stand;
 	
-	private final Kategorie kategorie;
+	private final IntKategorie kategorie;
 
-	public Wissensstandskategorie(Kategorie kategorie) {
+	public Wissensstandskategorie(IntKategorie kategorie) {
 		this.stand = 0;
 		this.kategorie = kategorie;
 	}
@@ -33,7 +33,7 @@ public class Wissensstandskategorie {
 		return this.stand;
 	}
 
-	public Kategorie getKategorie() {
+	public IntKategorie getKategorie() {
 		return kategorie;
 	}
 

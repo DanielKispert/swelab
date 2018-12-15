@@ -8,13 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import application.Feld;
-import application.GameObserver;
-import application.Spieler;
-import application.Spielfeldmanager;
-import application.Zugzustand;
+import application.IntFeld;
+import application.BrettspielObserver;
+import application.IntLernspielSpieler;
+import application.IntLernspielmanager;
 
-public class GUI extends JFrame implements GameObserver {
+public class GUI extends JFrame implements BrettspielObserver {
 
 	/**
 	 * whatever this is
@@ -22,7 +21,7 @@ public class GUI extends JFrame implements GameObserver {
 	private static final long serialVersionUID = 1L;
 
 	// GUI observing spielfeld
-	private final Spielfeldmanager spielfeld;
+	private final IntLernspielmanager spielfeld;
 
 	private final GameController myController;
 
@@ -48,11 +47,11 @@ public class GUI extends JFrame implements GameObserver {
 	
 	private final HeimatfeldButton[] heimatfelder;
 	
-	private Zugzustand zugzustand;
+	private IntLernspielmanager.Zugzustand zugzustand;
 	
-	private Spieler aktiverSpieler;
+	private IntLernspielSpieler aktiverSpieler;
 
-	public GUI(Spielfeldmanager spielfeld) {
+	public GUI(IntLernspielmanager spielfeld) {
 
 		// attach to spielfeld
 		this.spielfeld = spielfeld;
@@ -207,9 +206,9 @@ public class GUI extends JFrame implements GameObserver {
 					.setText("<html><b>" + spielfeld.getSpieler()[i].getHeimatfelder().getAnzahlInHeimatfeldern());
 		}
 		// update Felder
-		Feld[] feldUpdate = spielfeld.getFelder();
+		IntFeld[] feldUpdate = spielfeld.getFelder();
 		for (int i = 0; i < 48; i++) {
-			Spieler besetztVon = feldUpdate[i].getBesetztVon();
+			IntLernspielSpieler besetztVon = feldUpdate[i].getBesetztVon();
 			if (besetztVon == null) {
 				felder[i].setText("");
 				felder[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
@@ -251,7 +250,7 @@ public class GUI extends JFrame implements GameObserver {
 			infoString += "Bitte eine Kategorie für die Frage auswählen";
 			break;
 		case ERSTE_FRAGE_BEANTWORTEN:
-			infoString += spielfeld.getAusgewählteKategorienameFürFrage() + " ausgewählt";
+			infoString += spielfeld.getAusgewählteKategorieNameFürFrage() + " ausgewählt";
 			// fülle Fragedisplay
 			this.frageDisplay.setText(spielfeld.getAktuellerFragetext());
 			break;

@@ -1,6 +1,6 @@
 package application;
 
-public class Frage {
+public class Frage implements IntFrage{
 	
 	private final String fragetext;
 	

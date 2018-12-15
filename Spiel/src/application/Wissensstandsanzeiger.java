@@ -4,7 +4,7 @@ public class Wissensstandsanzeiger {
 
 	private Wissensstandskategorie[] kategorien;
 
-	public Wissensstandsanzeiger(Kategorie[] kategorien) {
+	public Wissensstandsanzeiger(IntKategorie[] kategorien) {
 		this.kategorien = new Wissensstandskategorie[4];
 		for (int i = 0; i < 4; i++) {
 			this.kategorien[i] = new Wissensstandskategorie(kategorien[i]);
@@ -17,7 +17,7 @@ public class Wissensstandsanzeiger {
 		return stand;
 	}
 	
-	public boolean erhöhe(Kategorie kategorie) {
+	public boolean erhöhe(IntKategorie kategorie) {
 		for (Wissensstandskategorie kat: kategorien) {
 			if (kat.getKategorie().getName().equals(kategorie.getName()) && kat.erhöheWissen()) {
 				return true;
@@ -35,7 +35,7 @@ public class Wissensstandsanzeiger {
 		return false;
 	}
 	
-	public boolean verringere(Kategorie kategorie) {
+	public boolean verringere(IntKategorie kategorie) {
 		for (Wissensstandskategorie kat: kategorien) {
 			if (kat.getKategorie().getName().equals(kategorie.getName()) && kat.verringereWissen()) {
 				return true;
