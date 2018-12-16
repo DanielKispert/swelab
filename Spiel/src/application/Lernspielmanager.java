@@ -260,6 +260,8 @@ public class Lernspielmanager extends Brettspielmanager implements IntLernspielm
 				} else if (!besetzenderSpieler.equals(amZug)) {
 					// jemand anders steht auf dem Startfeld, starte Fragerunde
 					this.idZugziel = id;
+					// entnehme Figur des Fragenden vom Heimatfeld
+					this.amZug.getHeimatfelder().entnehmeFigur();
 					stelleFrage(besetzenderSpieler);
 				} else {
 					// Es kann nicht eintreten, dass derselbe Spieler auf dem Startfeld steht, da der Fall beim Würfeln überprüft wird
