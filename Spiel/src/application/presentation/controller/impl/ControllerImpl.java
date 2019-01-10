@@ -1,13 +1,14 @@
 package application.presentation.controller.impl;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import application.port.MVCPort;
+import application.port.ManagerPort;
 import application.presentation.controller.port.Controller;
 import application.presentation.view.impl.FeldButton;
 import application.presentation.view.impl.HeimatfeldButton;
 import application.presentation.view.impl.KategorieButton;
 import application.presentation.view.port.GUI;
+import application.statemachine.port.State;
 import application.zug.port.ZugManagement;
 
 public class ControllerImpl implements Controller {
@@ -16,19 +17,14 @@ public class ControllerImpl implements Controller {
 	
 	private final GUI myView;
 	
-	private ZugManagement.S zustand;
+	private State.S zustand;
 
-	public ControllerImpl(GUI gui, ZugManagement spielfeld) {
+	public ControllerImpl(GUI gui, ManagerPort managerPort, MVCPort mvcport) {
 		// attach to model
-		this.spielfeld = spielfeld;
+		mvcport.subject().attach(this);
+		this.spielfeld = managerPort.zugManagement();
 		this.myView = gui;
-		spielfeld.attach(this);
-		update();
-	}
-
-	@Override
-	public void update() {
-		zustand = spielfeld.getZugZustand();
+		this.zustand = State.S.DARF_NOCH_WÜRFELN;
 	}
 
 	@Override
@@ -36,7 +32,7 @@ public class ControllerImpl implements Controller {
 		switch (zustand) {
 		case DARF_NOCH_WÜRFELN:
 			if (e.getSource().equals(myView.getWürfelButton())) {
-				spielfeld.würfle();
+				spielfeld.beginneZug();
 			}
 			break;
 		case MUSS_AUS_HEIMATFELD_ZIEHEN:
@@ -97,6 +93,12 @@ public class ControllerImpl implements Controller {
 			break;
 		
 		}
+	}
+
+	@Override
+	public void update(State newState) {
+		this.zustand = newState.getS();
+		
 	}
 
 }

@@ -1,12 +1,13 @@
 package application.presentation.view.port;
 
-import application.statemachine.port.Observer;
+import javax.swing.JButton;
 
-public interface GUI{
+import application.presentation.view.impl.FeldButton;
+import application.presentation.view.impl.HeimatfeldButton;
+import application.presentation.view.impl.KategorieButton;
+
+public interface GUI {	
 	
-	public void startEventLoop();
-	
-	/*
 	public JButton getWürfelButton();
 	
 	public HeimatfeldButton[] getHeimatfelder();
@@ -18,6 +19,5 @@ public interface GUI{
 	public JButton getFrageRichtigButton();
 	
 	public JButton getFrageFalschButton();
-	*/
 
 }

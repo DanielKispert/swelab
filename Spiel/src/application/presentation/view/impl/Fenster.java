@@ -53,18 +53,17 @@ public class Fenster extends JFrame implements GUI, Observer {
 	
 	private final HeimatfeldButtonImpl[] heimatfelder;
 	
-	private ZugManagement.S zugzustand;
+	private State.S zugzustand;
 	
 	private Spieler aktiverSpieler;
 
-	public Fenster(ZugManagement spielfeld) {
+	public Fenster(ManagerPort managerPort, MVCPort mvcport) {
 
 		// attach to spielfeld
-		this.spielfeld = spielfeld;
-		spielfeld.attach(this);
+		this.spielfeld = managerPort.zugManagement();
 
 		// make controller
-		this.myController = new ControllerImpl(this, spielfeld);
+		this.myController = new ControllerImpl(this, managerPort, mvcport);
 
 		setTitle("Learn-Master");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -177,19 +176,17 @@ public class Fenster extends JFrame implements GUI, Observer {
 		}
 
 		//update view
-		update();
+		mvcport.subject().attach(this);
 		// show frame
 		setVisible(true);
-	}
-
-	public Fenster(ManagerPort managerPort, MVCPort mvcPort) {
 	}
 
 	/**
 	 * spielfeldstate was updated
 	 */
-	public void update() {
-		this.zugzustand = spielfeld.getZugZustand();
+	@Override
+	public void update(State newState) {
+		this.zugzustand = newState.getS();
 		this.aktiverSpieler = spielfeld.getSpielerAmZug();
 		// update würfeldisplay
 		int gewürfelteZahl = spielfeld.getGewürfelt();
@@ -298,17 +295,5 @@ public class Fenster extends JFrame implements GUI, Observer {
 	
 	public JButton getFrageFalschButton() {
 		return this.frageFalschButton;
-	}
-
-	@Override
-	public void startEventLoop() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(State newState) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -1,5 +1,7 @@
 package application.zug.impl;
 
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Random;
 
 import application.Spielerinfos;
@@ -31,22 +33,24 @@ public class ZugMachen implements ZugManagement {
 	private Kategorie ausgewählteKategorieFürFrage;
 	
 	private Spieler gefragterSpieler;
-	
+
 	private Frage frage;
-	
+
 	private Spieler hatGewonnen;
 
-	public ZugMachen(Spielerinfos[] infos, Kategorie[] kategorien) {
+	public ZugMachen(StateMachinePort stateMachinePort) {
+		Spielerinfos[] infos = getInitialeSpielerInfos();
+		this.kategorien = getInitialeKategorieInfos();
+		this.stateMachine = stateMachinePort.stateMachine();
 		this.spieler = new SpielerImpl[infos.length];
 		for (int i = 0; i < infos.length; i++) {
-			this.spieler[i] = new SpielerImpl(infos[i].getName(), infos[i].getFarbe(), kategorien);
+			this.spieler[i] = new SpielerImpl(infos[i].getName(), infos[i].getFarbe(), this.kategorien);
 		}
-		this.kategorien = kategorien;
 		felder = new FeldImpl[48];
 		for (int i = 0; i < 48; i++) {
 			this.felder[i] = new FeldImpl();
 		}
-		//spieler 1 always starts first
+		// spieler 1 always starts first
 		amZug = spieler[0];
 		gewürfelt = -1;
 		idZugfeld = -1;
@@ -55,10 +59,6 @@ public class ZugMachen implements ZugManagement {
 		gefragterSpieler = null;
 		frage = null;
 		hatGewonnen = null;
-	}
-
-	public ZugMachen(StateMachinePort stateMachinePort) {
-		this.stateMachine = stateMachinePort.stateMachine();
 	}
 
 	public Spieler[] getSpieler() {
@@ -76,7 +76,7 @@ public class ZugMachen implements ZugManagement {
 	/**
 	 * Service
 	 */
-	public void würfle() {
+	public void beginneZug() {
 		// darf er noch würfeln?
 		if (getZustand().equals(State.S.DARF_NOCH_WÜRFELN) && getDarfNochWürfeln()) {
 			anzahlWürfe++;
@@ -98,7 +98,9 @@ public class ZugMachen implements ZugManagement {
 						if (anzahlWürfe >= 3) {
 							//nächster Spieler dran
 							beendeZug();
-						} 
+						} else {
+							setZustand(State.S.DARF_NOCH_WÜRFELN);
+						}
 					}
 				}
 			}
@@ -230,7 +232,6 @@ public class ZugMachen implements ZugManagement {
 	}
 	
 	/**
-	 * TODO
 	 * 1. ziehender Spieler klickt auf Kategorie
 	 * 2. zufällige Frage wird angezeigt
 	 * 3. Frage wird richtig oder falsch beantwortet
@@ -239,7 +240,6 @@ public class ZugMachen implements ZugManagement {
 	 * 6. Frage richtig: Figur kommt auf Feld. Falsch: Figur kommt auf Heimatfeld
 	 */
 	private void stelleFrage(Spieler gefragterSpieler) {
-		//TODO
 		this.gefragterSpieler = gefragterSpieler;
 		setZustand(State.S.FRAGE_KATEGORIE_AUSWÄHLEN);
 	}
@@ -362,6 +362,44 @@ public class ZugMachen implements ZugManagement {
 	
 	public Spieler getGewinner() {
 		return this.hatGewonnen;
+	}
+	
+	private Spielerinfos[] getInitialeSpielerInfos() {
+		Spielerinfos[] infos = new Spielerinfos[4];
+		infos[0] = new Spielerinfos("Adam", Color.RED);
+		infos[1] = new Spielerinfos("Bertha", Color.YELLOW);
+		infos[2] = new Spielerinfos("Charlie", Color.GREEN);
+		infos[3] = new Spielerinfos("Denise", Color.CYAN);
+		return infos;
+	}
+	
+	private Kategorie[] getInitialeKategorieInfos() {
+		ArrayList<Frage> fragen1 = new ArrayList<>();
+		ArrayList<Frage> fragen2 = new ArrayList<>();
+		ArrayList<Frage> fragen3 = new ArrayList<>();
+		ArrayList<Frage> fragen4 = new ArrayList<>();
+		for (int i = 0; i < 48; i++) {
+			switch (i % 4) {
+			case 0:
+				fragen1.add(new FrageImpl("Fragetext Nummer " + i, "Lösungstext Nummer " + i));
+				break;
+			case 1:
+				fragen2.add(new FrageImpl("Fragetext Nummer " + i, "Lösungstext Nummer " + i));
+				break;
+			case 2:
+				fragen3.add(new FrageImpl("Fragetext Nummer " + i, "Lösungstext Nummer " + i));
+				break;
+			case 3:
+				fragen4.add(new FrageImpl("Fragetext Nummer " + i, "Lösungstext Nummer " + i));
+				break;
+			}
+		}
+		KategorieImpl[] kategorien = new KategorieImpl[4];
+		kategorien[0] = new KategorieImpl("Kategorie 1", fragen1);
+		kategorien[1] = new KategorieImpl("Kategorie 2", fragen2);
+		kategorien[2] = new KategorieImpl("Kategorie 3", fragen3);
+		kategorien[3] = new KategorieImpl("Kategorie 4", fragen4);
+		return kategorien;
 	}
 
 }

@@ -6,6 +6,8 @@ import application.zug.impl.Spieler;
 
 public class HeimatfeldButtonImpl extends JButton implements HeimatfeldButton {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private final Spieler spieler;
 	
 	public HeimatfeldButtonImpl(Spieler spieler) {
